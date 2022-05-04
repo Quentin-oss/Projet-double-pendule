@@ -3,7 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import  matplotlib.animation as animation
-
+from math import log
 from IPython.display import HTML
 
 
@@ -13,12 +13,12 @@ m1 = 1
 m2 = 1
 l1 = 1
 l2 = 1
-tmax = 10
+tmax = 20
 k = 0.01
 
 #conditions initialles
-th0_1 = 1
-th0_2 = np.pi/2
+th0_1 = 0.1
+th0_2 = 0.1 #np.pi/2
 p0_1 = 0
 p0_2 = 0
 
@@ -54,6 +54,39 @@ def Euler(th0_1, th0_2, p0_1, p0_2, k, tmax):
         sol_p[0,i+1] = sol_p[0,i] + k*F3
         sol_p[1,i+1] = sol_p[1,i] + k*F4
     return t, sol_th, sol_p
+
+
+#Def Verlet
+def Verlet(th0_1, th0_2, p0_1, p0_2, k, tmax):
+    N = int(tmax/k)
+    t = np.linspace(0, tmax, N+1)
+    sol_th = np.zeros((2,N+1))
+    sol_p = np.zeros((2,N+1))
+    sol_th[0,0] = th0_1
+    sol_th[1,0] = th0_2
+    sol_p[0,0] = p0_1
+    sol_p[1,0] = p0_2
+    mu = m2/m1
+    for i in range(N):
+        F1, F2 = thstar(sol_th[0,i], sol_th[1,i], sol_p[0,i], sol_p[1,i])
+        F3, F4 = pstar(sol_th[0,i], sol_th[1,i], F1, F2)
+        F5, F6 = pstar(sol_th[0,i+1], sol_th[1,i+1],F1,F2)
+        pp1 = sol_p[0,i] - k*sol_th[0,i]
+        pp2 = sol_p[1,i] - k*sol_th[1,i]
+        
+        sol_th[0,i+1] = sol_th[0,i] + k*sol_p[0,i] - ((k**2)*F3)/2
+        sol_th[1,i+1] = sol_th[1,i] + k*sol_p[1,i] - ((k**2)*F4)/2
+        sol_p[0,i+1] = sol_p[0,i] - k*(F3 + F5)*(1/2)
+        sol_p[1,i+1] = sol_p[1,i] - k*(F4 + F6)*(1/2)
+        
+        #sol_th[0,i+1] = sol_th[0,i] + k*sol_p[0,i] + ((k^2)/2)*(1/l1)*(-(1+mu)*g*sol_th[0,i] + mu*g*sol_[0,i]
+        #sol_th[1,i+1] = sol_th[1,i] + k*sol_p[1,i] + ((k^2)/2)*(1/l2)*(1+mu)*g*sol_th[0,i]-(1+mu)*g*sol_th[1,i]
+        #sol_p[0,i+1] = sol_p[0,i] + (k/2)*(1/l1)*(-(1+mu)*g*(sol_th[0,i] + sol_th[0,i+1] +mu*g*(sol_th[1,i] + sol_th[1,i+1])))
+        #sol_p[1,i+1] = sol_p[1,i] + (k/2)*(1/l2)*((1+mu)*g*(sol_th[0,i] + sol_th[0,i+1] - (1+mu)*g*(sol_th[1,i] + sol_th[1,i+1])))
+        
+    return t, sol_th, sol_p
+
+
 
 #Def Range-Kuta 4
 def RK4(th0_1, th0_2, p0_1, p0_2, k, tmax):
@@ -101,7 +134,7 @@ def RK4(th0_1, th0_2, p0_1, p0_2, k, tmax):
 
 
 t, sol_th, sol_p = Euler(th0_1, th0_2, p0_1, p0_2, k, tmax)
-t, sol_th1 ,sol_p1 = Euler(th0_1+0.01,th0_2+0.01, p0_1+0.01,p0_2+0.01,k,tmax)
+t, sol_th1 ,sol_p1 = Euler(th0_1 + 1,th0_2+1, p0_1+1,p0_2+1,k,tmax)
 
 
 #position des pendules
@@ -195,3 +228,38 @@ ani = visualisation(t, sol_th)
 
 
 #HTML(ani.to_html5_video())
+
+
+#Coef de Lyapunov
+
+data = sol_th[1]
+
+N = len(data)
+eps = 0.01
+dx = [[] for i in range(N)]
+
+for i in range(N+1):
+    for j in range(i + 1, N):
+        if np.abs(data[i] - data[j]) < eps:
+            for k in range(min(N - i, N - j)):
+                dx[k].append(log(np.abs(data[i+k] + data[j+k] + 0.0000001)))
+    print("calcul en cours : " , i, "/",N)
+
+
+for i in range(len(dx)):
+    if (len(dx[i])):
+        log_L = sum(dx[i])
+        L = 10
+        #lamb_max = sum(dx[i]) / tmax 
+
+L = 10**log_L
+lamd_max = L/tmax
+print(lamd_max)
+
+
+
+
+
+
+
+
