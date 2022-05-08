@@ -13,11 +13,11 @@ m1 = 1
 m2 = 1
 l1 = 1
 l2 = 1
-tmax = 20
+tmax = 25
 k =0.01 #0.0002
 l = l1+l2
-qi1 = 0.1
-qi2 = 0.1 #np.pi/2
+qi1 = np.pi/2
+qi2 = np.pi/2
 pi1 = 0
 pi2 = 0
 N = int(tmax/k)  #int(tmax/k)
@@ -67,7 +67,7 @@ def calcul(sol):
     t = np.linspace(0, tmax, N+2)
     for i in range(int(N+1)):
         #print("calculen cour :",i, "/3002")
-        #sol[i+1,0], sol[i+1,1], sol[i+1,2], sol[i+1,3] = RK(sol[i,0], sol[i,1], sol[i,2], sol[i,3])
+        sol[i+1,0], sol[i+1,1], sol[i+1,2], sol[i+1,3] = RK4(sol[i,0], sol[i,1], sol[i,2], sol[i,3])
         a = RK4(sol[i,0], sol[i,1], sol[i,2], sol[i,3])
         a = np.array([a])
         
@@ -134,6 +134,7 @@ solution[i,1]))
     return Em
 
 Em = energie()
+
 ####On crée le graphe pour l'animation 
 
 pos1 = x1 + y1
@@ -210,7 +211,7 @@ ax2.plot(t, Em)
 plt.title('Evolution energetique')
 plt.xlabel('Temps (seconde)')
 plt.ylabel('Energies (joule)')
-#plt.show()
+plt.show()
 
 #graph traj des pendules
 fig, ax1=plt.subplots()
@@ -241,8 +242,8 @@ plt.show()
 #2 CALCUL DU PLUS GRAND COEFFICIENT DE LYAPUNOV
 #####################################
 
-
-data = pos2 #Liste pour laquelle on vuet calculer le coef, ici pos2 = x2 + y2
+'''
+data = solution[:,1] #Liste pour laquelle on vuet calculer le coef, ici pos2 = x2 + y2
 #data = solution[;,1]
 
 N = len(data)
@@ -266,3 +267,23 @@ print(lamb_max)
 #L = 10**log_L           -> probleme pour L car alors L tjr positif (si log_L = -2 alors L = 0,01 )
 #lamd_max = L/tmax
 #print(lamd_max)
+
+#N_dx = np.linspace(0, tmax, len(dx))
+
+fig, ax=plt.subplots()
+ax.plot(N_dx, dx, label = "dx")
+plt.legend()
+plt.show()
+'''
+
+#expo lyapunov
+
+
+
+
+
+
+
+
+
+

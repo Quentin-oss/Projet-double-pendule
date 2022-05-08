@@ -232,10 +232,10 @@ ani = visualisation(t, sol_th)
 
 #Coef de Lyapunov
 
-data = sol_th[1]
+data = pos1
 
 N = len(data)
-eps = 0.01
+eps = 0.001
 dx = [[] for i in range(N)]
 
 for i in range(N+1):
