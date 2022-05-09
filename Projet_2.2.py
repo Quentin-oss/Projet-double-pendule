@@ -8,7 +8,7 @@ from matplotlib.animation import FuncAnimation
 #définition des constantes
 L = 50
 N = 256
-tmax = 60  # faire pour 
+tmax = 60  # faire pour 30, 40, 50, 60, 70 
 dt = 0.0004
 Nt = int(tmax/dt)
 x = np.linspace(0, L, N)
