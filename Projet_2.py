@@ -8,7 +8,7 @@ from matplotlib.animation import FuncAnimation
 #définition des constantes
 L = 50
 N = 256
-tmax = 60  # faire pour 
+tmax = 70  # faire pour 
 dt = 0.0004
 Nt = int(tmax/dt)
 x = np.linspace(0, L, N)
@@ -63,7 +63,7 @@ def Solve(u, sol):
 
 sol_n, sol_a = Solve(u,sol)
    
-#création du graphe
+#création du graphe pour sil numérique
 res = np.linspace(np.min(sol_n), np.max(sol_n), 100) #mettre 50 si calcul trop lent
 X,T = np.meshgrid(x, t)
 plt.contourf(X, T, sol_n.T, res)  # sol_n.T = sol transposée 
@@ -71,8 +71,44 @@ plt.colorbar()
 plt.axis('scaled')
 plt.ylabel('t')
 plt.xlabel('x')
-plt.title('Korteweg-de Vries equation for two soliton')
+plt.title('Solution numérique')
 plt.show()
+
+
+##Partie 2
+print("calcul du graphe 2 en cours...")
+
+#création du graphe pour sol analytique
+res = np.linspace(len(x), len(t), 100) #mettre 50 si calcul trop lent
+X,T = np.meshgrid(x, t)
+plt.contourf(X, T, sol_a.T, res)  # sol_n.T = sol transposée 
+plt.colorbar()
+plt.axis('scaled')
+plt.ylabel('t')
+plt.xlabel('x')
+plt.title('solution analityque')
+plt.show()
+#discuter les résultats + savoir si il y a un periode pour la quel la sol_n aproxime sol_a
+
+
+#on peut faire une comparaison quantitative en comparant l'amplitude des deux soliton 
+
+delta = sol_a - sol_n
+
+#essai de graphique pour un temps donné mais pas concluant
+fig, ax=plt.subplots()
+ax.plot(t, delta[40,:], label = "numérique")
+#ax.plot(t, sol_a[40,:], label = "analytique")
+plt.xlabel("temp")
+plt.ylabel("amplitude")
+plt.title("comparaison")
+plt.legend()
+plt.show()
+
+#on peut faire une annimation pour tout t pour mieux visualiser les differances
+
+
+
 
 
 
